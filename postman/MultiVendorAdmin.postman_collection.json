@@ -1,0 +1,174 @@
+{
+  "info": {
+    "name": "MultiVendorAdmin API",
+    "_postman_id": "b8f7f9c1-ff3b-4ef5-8a1f-adminpanel",
+    "description": "JWT protected API documentation for the Laravel multi-vendor admin panel.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "login"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Me",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/me",
+          "host": ["{{base_url}}"],
+          "path": ["api", "me"]
+        }
+      }
+    },
+    {
+      "name": "Vendors - List",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/vendors",
+          "host": ["{{base_url}}"],
+          "path": ["api", "vendors"]
+        }
+      }
+    },
+    {
+      "name": "Vendors - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Fresh Store\",\n  \"owner_name\": \"Ayesha Noor\",\n  \"email\": \"fresh@example.com\",\n  \"phone\": \"03009998877\",\n  \"address\": \"Model Town, Lahore\",\n  \"status\": \"active\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/vendors",
+          "host": ["{{base_url}}"],
+          "path": ["api", "vendors"]
+        }
+      }
+    },
+    {
+      "name": "Vendors - Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Fresh Store Updated\",\n  \"owner_name\": \"Ayesha Noor\",\n  \"email\": \"fresh@example.com\",\n  \"phone\": \"03009998877\",\n  \"address\": \"Model Town, Lahore\",\n  \"status\": \"active\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/vendors/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "vendors", "1"]
+        }
+      }
+    },
+    {
+      "name": "Products - List",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/products",
+          "host": ["{{base_url}}"],
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Products - Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vendor_id\": 1,\n  \"name\": \"Bluetooth Speaker\",\n  \"sku\": \"BT-SPK-01\",\n  \"category\": \"Electronics\",\n  \"price\": 4500,\n  \"stock\": 15,\n  \"approval_status\": \"pending\",\n  \"description\": \"Portable speaker\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/products",
+          "host": ["{{base_url}}"],
+          "path": ["api", "products"]
+        }
+      }
+    },
+    {
+      "name": "Products - Approve",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/products/1/approve",
+          "host": ["{{base_url}}"],
+          "path": ["api", "products", "1", "approve"]
+        }
+      }
+    },
+    {
+      "name": "Products - Reject",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Accept", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/products/1/reject",
+          "host": ["{{base_url}}"],
+          "path": ["api", "products", "1", "reject"]
+        }
+      }
+    }
+  ]
+}
