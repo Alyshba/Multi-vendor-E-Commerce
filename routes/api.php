@@ -15,3 +15,4 @@ Route::middleware('jwt.auth')->group(function () {
     Route::patch('/products/{product}/approve', [ProductApiController::class, 'approve']);
     Route::patch('/products/{product}/reject', [ProductApiController::class, 'reject']);
 });
+Route::get('products', [ProductApiController::class, 'index']);

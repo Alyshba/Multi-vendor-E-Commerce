@@ -9,23 +9,30 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function index(Request $request)
-    {
-        $products = Product::with('vendor')
-            ->when($request->search, fn ($query, $search) => $query
-                ->where('name', 'like', "%{$search}%")
-                ->orWhere('sku', 'like', "%{$search}%")
-                ->orWhere('category', 'like', "%{$search}%"))
-            ->when($request->approval_status, fn ($query, $status) => $query->where('approval_status', $status))
-            ->when($request->vendor_id, fn ($query, $vendorId) => $query->where('vendor_id', $vendorId))
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
+{
 
-        return view('products.index', [
-            'products' => $products,
-            'vendors' => Vendor::orderBy('name')->get(),
-        ]);
+    $query = Product::query();
+
+    
+    if ($request->has('category_id')) {
+        $query->where('category_id', $request->category_id);
     }
+
+    
+    if ($request->has('min_price')) {
+        $query->where('price', '>=', $request->min_price);
+    }
+    if ($request->has('max_price')) {
+        $query->where('price', '<=', $request->max_price);
+    }
+
+    
+    $perPage = $request->get('per_page', 10);
+    $products = $query->paginate($perPage);
+
+    
+    return response()->json($products);
+}
 
     public function create()
     {
