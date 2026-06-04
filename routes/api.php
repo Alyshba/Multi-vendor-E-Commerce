@@ -16,3 +16,4 @@ Route::middleware('jwt.auth')->group(function () {
     Route::patch('/products/{product}/reject', [ProductApiController::class, 'reject']);
 });
 Route::get('products', [ProductApiController::class, 'index']);
+Route::get('admin/charts', [ProductApiController::class, 'chartData']);
