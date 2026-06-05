@@ -16,7 +16,19 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'role',
+        'phone',
+        'address',
     ];
+
+    public function cartItems()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 
     protected $hidden = [
         'password',

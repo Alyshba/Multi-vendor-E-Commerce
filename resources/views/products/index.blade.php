@@ -6,11 +6,11 @@
 <div class="card table-card">
     <div class="card-header bg-white">
         <form class="row g-2 align-items-end">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label">Search</label>
                 <input name="search" value="{{ request('search') }}" class="form-control" placeholder="Name, SKU, category">
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label">Vendor</label>
                 <select name="vendor_id" class="form-select">
                     <option value="">All vendors</option>
@@ -29,7 +29,6 @@
                 </select>
             </div>
             <div class="col-md-2"><button class="btn btn-outline-primary w-100">Filter</button></div>
-            <div class="col-md-2"><a href="{{ route('products.create') }}" class="btn btn-primary w-100">Add Product</a></div>
         </form>
     </div>
     <div class="table-responsive">

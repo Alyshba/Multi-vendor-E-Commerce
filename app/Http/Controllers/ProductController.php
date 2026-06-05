@@ -5,34 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
-{
+    {
+        $query = Product::with('vendor');
 
-    $query = Product::query();
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('sku', 'like', '%' . $request->search . '%')
+                    ->orWhere('category', 'like', '%' . $request->search . '%');
+            });
+        }
 
-    
-    if ($request->has('category_id')) {
-        $query->where('category_id', $request->category_id);
+        if ($request->filled('vendor_id')) {
+            $query->where('vendor_id', $request->vendor_id);
+        }
+
+        if ($request->filled('approval_status')) {
+            $query->where('approval_status', $request->approval_status);
+        }
+
+        $products = $query->latest()->paginate(10)->withQueryString();
+        $vendors = Vendor::orderBy('name')->get();
+
+        return view('products.index', compact('products', 'vendors'));
     }
-
-    
-    if ($request->has('min_price')) {
-        $query->where('price', '>=', $request->min_price);
-    }
-    if ($request->has('max_price')) {
-        $query->where('price', '<=', $request->max_price);
-    }
-
-    
-    $perPage = $request->get('per_page', 10);
-    $products = $query->paginate($perPage);
-
-    
-    return response()->json($products);
-}
 
     public function create()
     {
@@ -43,7 +44,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        Product::create($this->validated($request));
+        Product::create($this->normalizedProductData($request));
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
@@ -65,7 +66,7 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $product->update($this->validated($request, $product->id));
+        $product->update($this->normalizedProductData($request, $product->id));
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
@@ -79,14 +80,20 @@ class ProductController extends Controller
 
     public function approve(Product $product)
     {
-        $product->update(['approval_status' => 'approved']);
+        $product->update([
+            'approval_status' => 'approved',
+            'is_active' => true,
+        ]);
 
         return back()->with('success', 'Product approved.');
     }
 
     public function reject(Product $product)
     {
-        $product->update(['approval_status' => 'rejected']);
+        $product->update([
+            'approval_status' => 'rejected',
+            'is_active' => false,
+        ]);
 
         return back()->with('success', 'Product rejected.');
     }
@@ -103,5 +110,15 @@ class ProductController extends Controller
             'approval_status' => ['required', 'in:pending,approved,rejected'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
+    }
+
+    protected function normalizedProductData(Request $request, ?int $ignoreId = null): array
+    {
+        $data = $this->validated($request, $ignoreId);
+        $data['slug'] = Str::slug($data['name'] . '-' . $data['sku']);
+        $data['stock_quantity'] = $data['stock'];
+        $data['is_active'] = $data['approval_status'] === 'approved';
+
+        return $data;
     }
 }
