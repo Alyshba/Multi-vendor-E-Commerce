@@ -1,0 +1,274 @@
+{
+  "info": {
+    "name": "Vendor Panel API",
+    "description": "Multi-Vendor E-Commerce - Vendor Panel API Collection\nBase URL: http://localhost:8000/api\n\nINSTRUCTIONS:\n1. Run 'Login' request first\n2. Copy the token from response\n3. It is auto-saved to {{token}} variable\n4. All protected routes use it automatically",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api" },
+    { "key": "token",    "value": "" }
+  ],
+  "item": [
+    {
+      "name": "🔓 Auth",
+      "item": [
+        {
+          "name": "Test API",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/test",
+            "description": "Check if API is running"
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{base_url}}/register",
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"My Vendor\",\n  \"email\": \"myvendor@test.com\",\n  \"password\": \"123456\",\n  \"password_confirmation\": \"123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login ⬅ Run This First",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.token) {",
+                  "    pm.collectionVariables.set('token', res.token);",
+                  "    console.log('Token saved:', res.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{base_url}}/login",
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"email\": \"vendor@test.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "description": "Returns JWT token. Token is auto-saved to {{token}} variable."
+          }
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/me"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/refresh"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "query": [
+                { "key": "search",   "value": "", "disabled": true },
+                { "key": "status",   "value": "Approved", "disabled": true },
+                { "key": "page",     "value": "1", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Product",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/products/1"
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/products",
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"Test Product\",\n  \"description\": \"A great product description here\",\n  \"price\": 1500,\n  \"stock\": 25,\n  \"category_id\": 1,\n  \"status\": \"Pending\"\n}"
+            },
+            "description": "To upload an image, change body mode to form-data and add 'image' as File type"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/products/1",
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"Updated Product Name\",\n  \"price\": 2000,\n  \"stock\": 30\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/products/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🗂️ Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{base_url}}/categories",
+            "description": "Public route — no token needed"
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{base_url}}/categories/1"
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/categories",
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"New Category\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Orders",
+      "item": [
+        {
+          "name": "Get All Orders (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/orders"
+          }
+        },
+        {
+          "name": "Place Order (Public)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": "{{base_url}}/orders",
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"customer_name\": \"Test Customer\",\n  \"customer_email\": \"customer@test.com\",\n  \"product_id\": 1,\n  \"quantity\": 2\n}"
+            },
+            "description": "Public route — no token needed. Stock is auto-reduced."
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/orders/1"
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Accept",        "value": "application/json" }
+            ],
+            "url": "{{base_url}}/orders/1/status",
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"status\": \"Processing\"\n}"
+            },
+            "description": "Valid statuses: Pending, Processing, Shipped, Delivered, Cancelled"
+          }
+        }
+      ]
+    }
+  ]
+}
