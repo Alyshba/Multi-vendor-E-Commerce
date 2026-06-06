@@ -16,7 +16,7 @@ class DashboardController extends Controller
             'pendingProductsCount' => Product::where('approval_status', 'pending')->count(),
             'productsCount' => Product::count(),
             'ordersCount' => Order::count(),
-            'revenue' => Order::whereIn('status', ['paid', 'shipped', 'completed'])->sum('total_amount'),
+            'revenue' => Order::where('status', '!=', 'cancelled')->sum('total'),
             'latestVendors' => Vendor::latest()->take(5)->get(),
             'latestProducts' => Product::with('vendor')->latest()->take(6)->get(),
         ]);

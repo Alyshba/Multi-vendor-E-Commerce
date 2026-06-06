@@ -71,11 +71,11 @@
 
 @php
     $roleEmails = [
-        'admin' => 'admin@example.com',
-        'vendor' => 'vendor@example.com',
-        'customer' => 'customer@example.com',
+        'admin'    => 'Tahaadmin@gmail.com',
+        'vendor'   => 'TahaVendor@gmail.com',
+        'customer' => 'TahaCustomer@gmail.com',
     ];
-    $selectedRole = array_key_exists(old('role', 'vendor'), $roleEmails) ? old('role', 'vendor') : 'vendor';
+    $selectedRole = array_key_exists(old('role', 'admin'), $roleEmails) ? old('role', 'admin') : 'admin';
 @endphp
 
 <div class="login-shell">
@@ -137,14 +137,14 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Password</label>
-                                <input type="password" name="password" value="password" class="form-control" required>
+                                <input type="password" name="password" value="123Taha" class="form-control" required>
                             </div>
                             <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mb-4">
                                 <div class="form-check">
                                     <input type="checkbox" name="remember" class="form-check-input" id="remember">
                                     <label class="form-check-label" for="remember">Remember me</label>
                                 </div>
-                                <small class="credential-note px-3 py-2">Demo password: <strong>password</strong></small>
+                                <small class="credential-note px-3 py-2">Demo password: <strong>123Taha</strong></small>
                             </div>
                             <button class="btn btn-primary w-100">Login</button>
                         </form>

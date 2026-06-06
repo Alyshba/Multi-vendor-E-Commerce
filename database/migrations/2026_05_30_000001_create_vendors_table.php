@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 120);
             $table->string('owner_name', 120);
-            $table->string('email', 150)->unique();
+            $table->string('email', 150);
             $table->string('phone', 30);
             $table->text('address');
             $table->enum('status', ['pending', 'active', 'suspended'])->default('pending');

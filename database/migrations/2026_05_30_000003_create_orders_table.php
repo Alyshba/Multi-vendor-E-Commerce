@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('order_number')->unique();
             $table->string('customer_name');
             $table->string('customer_email');
-            $table->enum('status', ['pending', 'paid', 'shipped', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'processing', 'paid', 'shipped', 'delivered', 'completed', 'cancelled'])->default('pending');
             $table->decimal('total_amount', 10, 2)->default(0);
             $table->timestamps();
         });
