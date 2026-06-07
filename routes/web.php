@@ -16,7 +16,7 @@ use App\Http\Controllers\Customer\ProfileController as CustomerProfileController
 
 use Illuminate\Support\Facades\Route;
 
-// Public storefront
+// Public storefront (no auth required)
 Route::name('customer.')->group(function () {
     Route::get('/', function () {
         if (auth()->check()) {

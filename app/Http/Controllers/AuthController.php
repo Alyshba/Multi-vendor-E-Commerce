@@ -15,13 +15,32 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $validated = $request->validate([
+            'email'    => ['required', 'email'],
             'password' => ['required', 'string'],
-            'role' => ['required', 'in:admin,vendor,customer'],
+            'role'     => ['required', 'in:admin,vendor,customer'],
         ]);
 
+        // Only pass email + password to Auth::attempt (not role)
+        $credentials = [
+            'email'    => $validated['email'],
+            'password' => $validated['password'],
+        ];
+
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            throw ValidationException::withMessages([
+                'email' => 'Invalid email or password.',
+            ]);
+        }
+
+        $user = Auth::user();
+
+        // Verify the user's actual role matches what was selected
+        if ($user->role !== $validated['role']) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
             throw ValidationException::withMessages([
                 'email' => 'Invalid email, password, or account type.',
             ]);
@@ -29,7 +48,6 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
         if ($user->role === 'vendor') {
             return redirect()->route('vendor.products.index');
         } elseif ($user->role === 'customer') {

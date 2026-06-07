@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'apiLogin']);
 
-Route::middleware(['jwt.auth', 'role:admin'])->prefix('admin')->name('api.admin.')->group(function () {
+Route::middleware(['auth:api', 'role:admin'])->prefix('admin')->name('api.admin.')->group(function () {
     Route::get('/me', [AuthController::class, 'apiMe']);
     Route::post('/logout', [AuthController::class, 'apiLogout']);
     Route::apiResource('vendors', VendorApiController::class);
@@ -64,7 +64,7 @@ Route::prefix('vendor')->group(function () {
     Route::get('/categories', [\App\Http\Controllers\Api\Vendor\CategoryController::class, 'index']);
     Route::get('/categories/{id}', [\App\Http\Controllers\Api\Vendor\CategoryController::class, 'show']);
 
-    Route::middleware(['jwt.auth', 'role:vendor'])->group(function () {
+    Route::middleware(['auth:api', 'role:vendor'])->group(function () {
         Route::post('/logout',  [\App\Http\Controllers\Api\Vendor\AuthController::class, 'logout']);
         Route::post('/refresh', [\App\Http\Controllers\Api\Vendor\AuthController::class, 'refresh']);
         Route::get('/me',       [\App\Http\Controllers\Api\Vendor\AuthController::class, 'me']);
